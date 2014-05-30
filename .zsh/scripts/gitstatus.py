@@ -5,8 +5,8 @@ from __future__ import print_function
 
 # change those symbols to whatever you prefer
 #symbols = {'ahead of': '↑', 'behind': '↓', 'prehash':':'}
-#symbols = {'ahead of': '❙⬆', 'behind': '❙⬇', 'prehash':':'}
-symbols = {'ahead of': '❙▲', 'behind': '❙▼', 'prehash':':', 'diverged': '⭠'}
+#symbols = {'ahead of': '⬆', 'behind': '⬇', 'prehash':':'}
+symbols = {'ahead of': '▲', 'behind': '▼', 'prehash':':', 'diverged': '⭠'}
 
 from subprocess import Popen, PIPE
 
