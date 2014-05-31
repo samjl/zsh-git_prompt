@@ -38,3 +38,8 @@ BG_LBLUE = '104'
 BG_LMAGENTA = '105'
 BG_LCYAN = '106'
 BG_WHITE = '107'
+
+## Create a zsh prompt formatting string
+# Content inside %{ %} is not used by zsh to calculate the prompt length.
+def buildFormatStr(fg, bg):
+    return '%{\e[0;' + fg + ';' + bg + 'm%}'

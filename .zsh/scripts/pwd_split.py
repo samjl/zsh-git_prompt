@@ -19,11 +19,6 @@ USE_CHEVRON = True
 CHEVRON = '⮀'
 SLASH = '/'
 
-## Create a zsh prompt formatting string
-# Content inside %{ %} is not used by zsh to calculate the prompt length.
-def buildFormatStr(fg, bg):
-    return '%{\e[0;' + fg + ';' + bg + 'm%}'
-
 # Parameter passed in is the current PWD
 original = sys.argv[1]
 dirStr = original.replace('/home/sam', '~')
