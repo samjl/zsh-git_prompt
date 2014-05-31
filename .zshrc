@@ -27,7 +27,8 @@ source ~/.zsh/zshrc.sh
 PROMPT='$(pwd_split)'
 #PROMPT='%{$parse_special}'
 #RPROMPT='%{$fg[green]%}%~%{$reset_color%}$(git_super_status) %*'
-RPROMPT='$(git_super_status)%*'
+#RPROMPT='$(git_super_status)%*'
+RPROMPT='$(git_super_status)$(colored_time)'
 #RPROMPT='$(git_super_status) $(date +%T)'
 
 TMOUT=1

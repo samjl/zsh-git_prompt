@@ -1,10 +1,8 @@
 # To install source this file from your .zshrc file
 
-# Git prompt directory
-# Change this to reflect your installation directory
-export __GIT_PROMPT_DIR=~/.zsh/scripts
-# Present working directory prompt
-export __PWD_PROMPT_DIR=~/.zsh/scripts
+# Scripts directory
+export __SCRIPTS_DIR=~/.zsh/scripts
+
 
 # Initialize colors.
 autoload -U colors
@@ -78,7 +76,7 @@ function chpwd_update_git_vars() {
 function update_current_git_vars() {
     unset __CURRENT_GIT_STATUS
 
-    local gitstatus="$__GIT_PROMPT_DIR/gitstatus.py"
+    local gitstatus="$__SCRIPTS_DIR/gitstatus.py"
     _GIT_STATUS=`python ${gitstatus}`
     __CURRENT_GIT_STATUS=("${(@f)_GIT_STATUS}")
 	GIT_BRANCH=$__CURRENT_GIT_STATUS[1]
@@ -126,9 +124,15 @@ pwd_split() {
     #echo "$(pwd)"
     local original_pwd="$(pwd)"
     #echo "$original_pwd"
-    local new_pwd="$__PWD_PROMPT_DIR/pwd_split.py"
+    local new_pwd="$__SCRIPTS_DIR/pwd_split.py"
     SPLIT_PWD=`python ${new_pwd} ${original_pwd}`
     echo "$SPLIT_PWD"
+}
+
+colored_time() {
+    local cmd="$__SCRIPTS_DIR/time_format.py"
+    TIME=`python ${cmd}`
+    echo "$TIME"
 }
 
 # Default values for the appearance of the prompt. Configure at will.
