@@ -25,6 +25,14 @@ note_ignore="yes"
 note_command="?"
 
 function preexec_start_cmd_timer() {
+    # modify the prompt for the command that is executing to to show the start time
+    C=$(($COLUMNS-24))
+    echo -e "\033[1A\033[${C}C"
+
+    # print the time the command was executed on the next line
+    #print -nP "Command started @ %*\n"
+
+    # start the command timer
     if [ "x$TTY" != "x" ]; then
         note_remind="$SECONDS"
         note_ignore=""

@@ -12,26 +12,20 @@ fi
 autoload -Uz compinit -U promptinit
 compinit -C
 promptinit
+
 ### set walters prompt ###
 #prompt walters
+
 ### set custom git prompt ###
 source ~/.zsh/zshrc.sh
 
 # Don't include the space at the end of the right prompt
 # Requires zsh 5.0.5 +
 #ZLE_RPROMPT_INDENT=0
-
-#PROMPT='%B%#%b '
-#PROMPT='%{$bg[green]%}%{$fg[black]%}$(pwd_split)%{$reset_color%} %B%#%b '
-#local parse_special=%{$(pwd_split)}
 PROMPT='$(pwd_split)'
-#PROMPT='%{$parse_special}'
-#RPROMPT='%{$fg[green]%}%~%{$reset_color%}$(git_super_status) %*'
-#RPROMPT='$(git_super_status)%*'
-RPROMPT='$(git_super_status)$(colored_time)'
-#RPROMPT='$(git_super_status) $(date +%T)'
+RPROMPT='$(git_super_status)%*'
 
-TMOUT=1
+TMOUT=60
 TRAPALRM() {
     zle reset-prompt
 }
