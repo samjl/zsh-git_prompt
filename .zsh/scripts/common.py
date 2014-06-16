@@ -42,13 +42,10 @@ SOL_GREEN = '100'
 ## Create a zsh prompt formatting string
 # Content inside %{ %} is not used by zsh to calculate the prompt length.
 def buildFormatStr(fg, bg):
-    return '%{\e[0;' + fg + ';' + bg + 'm%}'
+    return '%{\e[' + fg + 'm\e[' + bg + 'm%}'
 
 def format256ColourFg(colour):
     return '0;38;5;' + colour
 
 def format256ColourBg(colour):
     return '48;5;' + colour
-
-def buildThemeFormatString(fg, bg):
-    return '%{\e[' + fg + 'm\e[' + bg + 'm%}'

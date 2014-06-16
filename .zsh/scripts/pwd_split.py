@@ -60,10 +60,10 @@ for direc in dirList:
     else:
         arrowBgCol = format256ColourBg(arrowBgCol)
     if USE_CHEVRON:
-        newDirPrompt = newDirPrompt + buildThemeFormatString(format256ColourFg(fgColour), format256ColourBg(bgOrder[index])) + direc + \
-                       buildThemeFormatString(format256ColourFg(bgOrder[index]), arrowBgCol) + CHEVRON
+        newDirPrompt = newDirPrompt + buildFormatStr(format256ColourFg(fgColour), format256ColourBg(bgOrder[index])) + direc + \
+                       buildFormatStr(format256ColourFg(bgOrder[index]), arrowBgCol) + CHEVRON
     else:
-        newDirPrompt = newDirPrompt + buildThemeFormatString(format256ColourFg(LGRAY), format256ColourFg(bgOrder[index])) + direc + SLASH
+        newDirPrompt = newDirPrompt + buildFormatStr(format256ColourFg(LGRAY), format256ColourFg(bgOrder[index])) + direc + SLASH
     index += 1
     dirsDone += 1
 newDirPrompt += RESET

@@ -86,46 +86,46 @@ else: # on either a remote (tracked) or local only branch
         behind = len(behead) - ahead
         #print (behind)
         if behind != 0 and ahead != 0:
-            remote += buildThemeFormatString(format256ColourFg(RED), BG_DEFAULT) + '%s%s%s' % (behind, symbols['diverged'], ahead)
-            #remote += buildThemeFormatString(FG_BLACK, BG_RED) + '%s%s%s' % (behind, symbols['diverged'], ahead)
+            remote += buildFormatStr(format256ColourFg(RED), BG_DEFAULT) + '%s%s%s' % (behind, symbols['diverged'], ahead)
+            #remote += buildFormatStr(FG_BLACK, BG_RED) + '%s%s%s' % (behind, symbols['diverged'], ahead)
         else:
             if behind:
-                remote += buildThemeFormatString(format256ColourFg(BLUE), BG_DEFAULT) + '%s%s' % (symbols['behind'], behind)
+                remote += buildFormatStr(format256ColourFg(BLUE), BG_DEFAULT) + '%s%s' % (symbols['behind'], behind)
             if ahead:
-                remote += buildThemeFormatString(format256ColourFg(YELLOW), BG_DEFAULT) + '%s%s' % (symbols['ahead of'], ahead)
+                remote += buildFormatStr(format256ColourFg(YELLOW), BG_DEFAULT) + '%s%s' % (symbols['ahead of'], ahead)
 
 ### BRANCH AND BRANCH STATUS ###
 gitStatus = ''
 if detached == True:
-    gitStatus = buildThemeFormatString(format256ColourFg(BLACK), format256ColourFg(RED)) + str(branch)
+    gitStatus = buildFormatStr(format256ColourFg(BLACK), format256ColourFg(RED)) + str(branch)
 elif tracked == False:
-    gitStatus = buildThemeFormatString(format256ColourFg(GREEN), BG_DEFAULT) + str(branch)
+    gitStatus = buildFormatStr(format256ColourFg(GREEN), BG_DEFAULT) + str(branch)
 else: # tracked == True and detac,hed == False
-    gitStatus = buildThemeFormatString(format256ColourFg(RED), BG_DEFAULT) + str(branch)
-    #branchFormatted = buildThemeFormatString(FG_BLACK, BG_RED) + str(branch)
+    gitStatus = buildFormatStr(format256ColourFg(RED), BG_DEFAULT) + str(branch)
+    #branchFormatted = buildFormatStr(FG_BLACK, BG_RED) + str(branch)
     if remote is not '':
         gitStatus += RESET + '❙' + remote # TODO is remote ever anything for untracked or no branch?
 gitStatus += RESET + '❙'
 
 ### ADDED ### green
 if nb_staged != 0:
-    gitStatus += buildThemeFormatString(format256ColourFg(GREEN), BG_DEFAULT) + '✚' + str(nb_staged) + RESET + '❙'
+    gitStatus += buildFormatStr(format256ColourFg(GREEN), BG_DEFAULT) + '✚' + str(nb_staged) + RESET + '❙'
 
 ### MERGE CONFLICTS ###
 if nb_U != 0:
-    gitStatus += buildThemeFormatString(format256ColourFg(RED), BG_DEFAULT) + '✘' + str(nb_U) + RESET + '❙'
+    gitStatus += buildFormatStr(format256ColourFg(RED), BG_DEFAULT) + '✘' + str(nb_U) + RESET + '❙'
 
 ### MODIFIED FILES ### red
 if nb_changed != 0:
-    gitStatus += buildThemeFormatString(format256ColourFg(RED), BG_DEFAULT) + '✱' + str(nb_changed) + RESET + '❙'
+    gitStatus += buildFormatStr(format256ColourFg(RED), BG_DEFAULT) + '✱' + str(nb_changed) + RESET + '❙'
 
 ### UNTRACKED ###
 if nb_untracked != 0:
-    gitStatus += buildThemeFormatString(format256ColourFg(BLUE), BG_DEFAULT) + '⚡' + str(nb_untracked) + RESET + '❙'
+    gitStatus += buildFormatStr(format256ColourFg(BLUE), BG_DEFAULT) + '⚡' + str(nb_untracked) + RESET + '❙'
 
 ### CLEAN REPO ###
 if clean:
-    gitStatus += buildThemeFormatString(format256ColourFg(GREEN), BG_DEFAULT) + '✔' + RESET  + '❙' # make bold
+    gitStatus += buildFormatStr(format256ColourFg(GREEN), BG_DEFAULT) + '✔' + RESET  + '❙' # make bold
     
 
 ### STASHES ###
