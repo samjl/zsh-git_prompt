@@ -4,9 +4,13 @@
 import string, sys
 from common import *
 
+# Solarized theme
+#fgColour = SOL_FOREGROUND
+#bgOrder = [SOL_YELLOW, SOL_ORANGE, SOL_RED, SOL_MAGENTA, SOL_VIOLET, SOL_BLUE, SOL_CYAN, SOL_GREEN]
+# Custom theme
+fgColour = LGRAY
+bgOrder = [DGRAY, GREEN, BLUE, MAGENTA, CYAN]
 
-bgOrder = [BG_DGRAY, BG_GREEN, BG_BLUE, BG_MAGENTA, BG_CYAN]
-fgOrder = [FG_DGRAY, FG_GREEN, FG_BLUE, FG_MAGENTA, FG_CYAN]
 
 # LIMIT_CHARS - Whether to limit the number of characters in the directory string.
 # If True limits to the number of characters specified by MAX_CHARS.
@@ -21,7 +25,8 @@ SLASH = '/'
 
 # Parameter passed in is the current PWD
 original = sys.argv[1]
-dirStr = original.replace('/home/sam', '~')
+dirStr = original.replace('/home/slea1', '~')
+dirStr = dirStr.replace('~/workspace/', 'w/')
 dirStrLength = len(dirStr)
 #print 'Number of characters: {0}'.format(dirStrLength) # if over x chars replace directories with ..
 dirList = dirStr.split('/')
@@ -52,11 +57,13 @@ for direc in dirList:
         arrowBgCol = bgOrder[index + 1]
     if dirsDone == dirCount - 1:
         arrowBgCol = BG_DEFAULT #BG_BLACK
-    if USE_CHEVRON:
-        newDirPrompt = newDirPrompt + buildFormatStr(FG_BLACK, bgOrder[index]) + direc + \
-                       buildFormatStr(fgOrder[index], arrowBgCol) + CHEVRON
     else:
-        newDirPrompt = newDirPrompt + buildFormatStr(FG_BLACK, bgOrder[index]) + direc + SLASH
+        arrowBgCol = format256ColourBg(arrowBgCol)
+    if USE_CHEVRON:
+        newDirPrompt = newDirPrompt + buildThemeFormatString(format256ColourFg(fgColour), format256ColourBg(bgOrder[index])) + direc + \
+                       buildThemeFormatString(format256ColourFg(bgOrder[index]), arrowBgCol) + CHEVRON
+    else:
+        newDirPrompt = newDirPrompt + buildThemeFormatString(format256ColourFg(LGRAY), format256ColourFg(bgOrder[index])) + direc + SLASH
     index += 1
     dirsDone += 1
 newDirPrompt += RESET
