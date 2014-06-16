@@ -46,7 +46,8 @@ nb_staged = len(staged_files) - nb_U
 # untracked files
 nb_untracked = len(Popen(['git','ls-files','--others','--exclude-standard'],stdout=PIPE).communicate()[0].splitlines())
 
-# TODO add git stash list
+# number of stashes
+nb_stashes = len(Popen(['git','stash','list'],stdout=PIPE).communicate()[0].splitlines())
 
 # check if the repo is clean
 # i.e. no changed, staged, unmerged, untracked files
@@ -127,8 +128,8 @@ if nb_untracked != 0:
 if clean:
     gitStatus += buildFormatStr(format256ColourFg(GREEN), BG_DEFAULT) + '✔' + RESET  + '❙' # make bold
     
-
 ### STASHES ###
-# TODO add number of stahes
+if nb_stashes != 0:
+    gitStatus += buildFormatStr(format256ColourFg(GREEN), BG_DEFAULT) + '➦' + str(nb_stashes) + RESET  + '❙'
 
 print(gitStatus)
