@@ -20,6 +20,9 @@ add-zsh-hook precmd precmd_update_git_vars
 add-zsh-hook preexec preexec_start_cmd_timer
 add-zsh-hook precmd precmd_stop_cmd_timer
 
+#add-zsh-hook preexec preexec_virtualenv
+add-zsh-hook precmd precmd_virtualenv
+
 note_remind=0
 note_ignore="yes"
 note_command="?"
@@ -46,8 +49,8 @@ function precmd_stop_cmd_timer() {
         if [ "x$note_ignore" = "x" ]; then
             note_ignore="yes"
             xx=$(($SECONDS-$note_remind))
-            if [ $xx -gt 10 ]; then
-                if [ $TTYIDLE -gt 10 ]; then
+            if [ $xx -gt 1 ]; then
+                if [ $TTYIDLE -gt 1 ]; then
                     note_report $xx
                 fi
             fi
@@ -59,6 +62,11 @@ function note_report()
 {
     #echo ""
     echo "Command completed in $1 seconds"
+}
+
+# function preexec_virtualenv() {
+function precmd_virtualenv() {
+    python-info
 }
 
 ## Function definitions
@@ -88,10 +96,21 @@ function update_current_git_vars() {
     GIT_STATUS=`python ${gitstatus}`
 }
 
+virtualenv_status() {
+    local venv="$__SCRIPTS_DIR/virtualenv_status.py"
+    echo `python ${venv}`
+    #echo $VIRTUAL_ENV
+}
 
 git_super_status() {
-	precmd_update_git_vars
-	echo "$GIT_STATUS"
+    precmd_update_git_vars
+    echo "$GIT_STATUS"
+}
+
+left_prompt() {
+    local V=$(virtualenv_status)
+    local P=$(pwd_split)
+    echo ${V} ${P}
 }
 
 pwd_split() {

@@ -19,8 +19,8 @@ MAX_CHARS = 30
 
 # USE_CHEVRON - Whether to use the special chevron character or a normal slash to separate directories.
 # Powerline symbols are required to display the chevron.
-USE_CHEVRON = True
-CHEVRON = '⮀'
+USE_CHEVRON = False
+CHEVRON = '>' # '⮀'
 SLASH = '/'
 
 # Parameter passed in is the current PWD
@@ -37,7 +37,7 @@ dirCount = len(dirList)
 if LIMIT_CHARS:
     dirRemoveIndex = 1
     while dirStrLength > MAX_CHARS:
-        if dirRemoveIndex > dirCount - 2: # Never shorten last dir in list
+        if dirRemoveIndex > dirCount - 2:  # Never shorten last dir in list
             break
         dirList[dirRemoveIndex] = '..'
         dirRemoveIndex += 1
@@ -45,16 +45,12 @@ if LIMIT_CHARS:
         for directory in dirList:
             dirStrLength += len(directory) + 1
 
-newDirPrompt = ''
-index = 0
+newDirPrompt = ' '
+# index = 0
 dirsDone = 0
-for direc in dirList:
-    if index == len(bgOrder):
-        index = 0
-    if index == len(bgOrder) - 1:
-        arrowBgCol = bgOrder[0]
-    else:
-        arrowBgCol = bgOrder[index + 1]
+for index, direc in enumerate(dirList):
+    index = index % len(bgOrder)
+    arrowBgCol = bgOrder[index]
     if dirsDone == dirCount - 1:
         arrowBgCol = BG_DEFAULT #BG_BLACK
     else:
@@ -63,8 +59,13 @@ for direc in dirList:
         newDirPrompt = newDirPrompt + buildFormatStr(format256ColourFg(fgColour), format256ColourBg(bgOrder[index])) + direc + \
                        buildFormatStr(format256ColourFg(bgOrder[index]), arrowBgCol) + CHEVRON
     else:
-        newDirPrompt = newDirPrompt + buildFormatStr(format256ColourFg(LGRAY), format256ColourFg(bgOrder[index])) + direc + SLASH
-    index += 1
+        newDirPrompt = newDirPrompt + buildFormatStr(format256ColourFg(
+            bgOrder[index]), BG_DEFAULT) + direc
+        if dirsDone == dirCount - 1:
+            newDirPrompt = newDirPrompt + RESET + " > "
+        else:
+            newDirPrompt = newDirPrompt + buildFormatStr(
+                format256ColourFg(bgOrder[index]), BG_DEFAULT) + SLASH
+    # index += 1
     dirsDone += 1
-newDirPrompt += RESET
-print newDirPrompt
+print(newDirPrompt)
