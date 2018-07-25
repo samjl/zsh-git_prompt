@@ -18,7 +18,7 @@ if 'fatal: not a git repository' in error_string:
 
 # git symbolic-ref HEAD should return "refs/heads/branch_name" so
 # remove the first 12 chars
-branch = branch.strip()[11:]
+branch = branch.strip()[11:].decode("UTF-8")
 
 # modified files
 cmd = ['git', 'diff', '--name-status']
