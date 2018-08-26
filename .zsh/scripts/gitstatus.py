@@ -38,7 +38,7 @@ staged_files = [namestat[0] for namestat in Popen(cmd, stdout=PIPE).
 nb_changed = len(changed_files) - changed_files.count('U')
 
 # conflicts/unmerged files
-nb_U = staged_files.count('U') # conflicts
+nb_U = staged_files.count('U')  # conflicts
 
 # number of staged files = all results - 'U' status files
 nb_staged = len(staged_files) - nb_U
@@ -49,7 +49,7 @@ nb_untracked = len(Popen(cmd, stdout=PIPE).communicate()[0].decode('utf-8')
                    .splitlines())
 
 # number of stashes
-nb_stashes = len(Popen(['git','stash','list'],stdout=PIPE).communicate()[0]
+nb_stashes = len(Popen(['git', 'stash', 'list'], stdout=PIPE).communicate()[0]
                  .decode('utf-8').splitlines())
 
 # check if the repo is clean
@@ -62,13 +62,13 @@ else:
 remote = ''
 detached = False
 tracked = False
-if not branch: # not on any branch
+if not branch:  # not on any branch
     # print('no branch')
     branch = symbols['detached'] + (Popen(['git', 'rev-parse', '--short',
                                           'HEAD'], stdout=PIPE)
                                     .communicate()[0].decode('utf-8')[:-1])
     detached = True
-else: # on either a remote (tracked) or local only branch
+else:  # on either a remote (tracked) or local only branch
     remote_name = Popen(['git', 'config', 'branch.%s.remote' % branch],
                         stdout=PIPE).communicate()[0].decode('utf-8').strip()
     # print(remote_name)
@@ -76,7 +76,7 @@ else: # on either a remote (tracked) or local only branch
         merge_name = Popen(['git', 'config', 'branch.%s.merge' % branch],
                            stdout=PIPE).communicate()[0].decode('utf-8').strip()
         # print(merge_name)
-        if remote_name == '.': # local
+        if remote_name == '.':  # local
             # print('local branch')
             remote_ref = merge_name
         else:
@@ -86,45 +86,45 @@ else: # on either a remote (tracked) or local only branch
         revgit = Popen(['git', 'rev-list', '--left-right', '%s...HEAD' %
                         remote_ref], stdout=PIPE, stderr=PIPE)
         revlist = revgit.communicate()[0].decode('utf-8')
-        if revgit.poll(): # fallback to local
+        if revgit.poll():  # fallback to local
             revlist = Popen(['git', 'rev-list', '--left-right', '%s...HEAD'
                              % merge_name], stdout=PIPE, stderr=PIPE).communicate()[0].decode('utf-8')
         # print (revlist)
         # You can be ahead '>' and behind '<' if local version of
         # tracked branch is on another branch
         behead = revlist.splitlines()
-        ahead = len([x for x in behead if x[0]=='>'])
+        ahead = len([x for x in behead if x[0] == '>'])
         # print (ahead)
         behind = len(behead) - ahead
         # print (behind)
         if behind != 0 and ahead != 0:
-            remote += buildFormatStr(format256ColourFg(BLACK),
-                                     format256ColourBg(RED))\
-                      + ' %s%s%s ' % (behind, symbols['diverged'], ahead)
+            remote += (buildFormatStr(format256ColourFg(BLACK),
+                                      format256ColourBg(RED))
+                       + ' %s%s%s ' % (behind, symbols['diverged'], ahead))
         # else:
         elif behind:
-            remote += buildFormatStr(format256ColourFg(BLACK),
-                                     format256ColourBg(BLUE))\
-                      + ' %s%s ' % (symbols['behind'], behind)
+            remote += (buildFormatStr(format256ColourFg(BLACK),
+                                      format256ColourBg(BLUE))
+                       + ' %s%s ' % (symbols['behind'], behind))
         elif ahead:
-            remote += buildFormatStr(format256ColourFg(BLACK),
-                                     format256ColourBg(YELLOW))\
-                      + ' %s%s ' % (symbols['ahead of'], ahead)
-        else: # ahead and behind are 0
-            remote += buildFormatStr(format256ColourFg(BLACK),
-                                     format256ColourBg(GREEN))\
-                      + ' %s ' % (symbols['up-to-date'])
+            remote += (buildFormatStr(format256ColourFg(BLACK),
+                                      format256ColourBg(YELLOW))
+                       + ' %s%s ' % (symbols['ahead of'], ahead))
+        else:  # ahead and behind are 0
+            remote += (buildFormatStr(format256ColourFg(BLACK),
+                                      format256ColourBg(GREEN))
+                       + ' %s ' % (symbols['up-to-date']))
 
-### BRANCH AND BRANCH STATUS ###
+""" BRANCH AND BRANCH STATUS """
 gitStatus = ''
 if detached:
     gitStatus = buildFormatStr(format256ColourFg(BLACK),
                                format256ColourBg(RED)) + " {} ".format(branch)
 elif not tracked:
-    gitStatus = buildFormatStr(format256ColourFg(BLACK),
-                               format256ColourBg(GREEN))\
-                + " {} ".format(branch)
-else: # tracked == True and detac,hed == False
+    gitStatus = (buildFormatStr(format256ColourFg(BLACK),
+                                format256ColourBg(GREEN))
+                 + " {} ".format(branch))
+else:  # tracked == True and detached == False
     if remote is not '':
         gitStatus += remote + RESET
     gitStatus += buildFormatStr(format256ColourFg(BLACK), format256ColourBg(
@@ -132,38 +132,39 @@ else: # tracked == True and detac,hed == False
 # gitStatus += RESET + '❙'
 gitStatus += RESET
 
-### ADDED ### green
+""" ADDED (green) """
 if nb_staged != 0:
-    gitStatus += buildFormatStr(format256ColourFg(BLACK),
-                                format256ColourBg(GREEN))\
-                 + ' ✚{} '.format(nb_staged) + RESET
+    gitStatus += (buildFormatStr(format256ColourFg(BLACK),
+                                 format256ColourBg(GREEN))
+                  + ' ✚{} '.format(nb_staged) + RESET)
 
-### MERGE CONFLICTS ###
+""" MERGE CONFLICTS """
 if nb_U != 0:
-    gitStatus += buildFormatStr(format256ColourFg(RED), BG_DEFAULT) + '✘' \
-                 + str(nb_U) + RESET + '❙'
+    gitStatus += (buildFormatStr(format256ColourFg(RED), BG_DEFAULT) + '✘'
+                  + str(nb_U) + RESET + '❙')
 
-### MODIFIED FILES ### red
+""" MODIFIED FILES (red) """
 if nb_changed != 0:
-    gitStatus += buildFormatStr(format256ColourFg(BLACK),
-                                format256ColourBg(RED))\
-                 + ' ✱{} '.format(nb_changed) + RESET
+    gitStatus += (buildFormatStr(format256ColourFg(BLACK),
+                                 format256ColourBg(RED))
+                  + ' ✱{} '.format(nb_changed) + RESET)
 
-### UNTRACKED ###
+""" UNTRACKED """
 if nb_untracked != 0:
-    gitStatus += buildFormatStr(format256ColourFg(BLACK),
-                                format256ColourBg(BLUE))\
-                 + ' ⚡{} '.format(nb_untracked) + RESET
+    gitStatus += (buildFormatStr(format256ColourFg(BLACK),
+                                 format256ColourBg(BLUE))
+                  + ' ⚡{} '.format(nb_untracked) + RESET)
 
-### CLEAN REPO ###
+""" CLEAN REPO """
 # if clean:
-#     gitStatus += buildFormatStr(format256ColourFg(GREEN), BG_DEFAULT) + '✔' + RESET  + '❙' # make bold
+#     gitStatus += (buildFormatStr(format256ColourFg(GREEN), BG_DEFAULT) + '✔'
+#                   + RESET + '❙')  # make bold
 
-### STASHES ###
+""" STASHES """
 if nb_stashes != 0:
-    gitStatus += buildFormatStr(format256ColourFg(BLACK),
-                                format256ColourBg(LGRAY))\
-                 + ' ➦{} '.format(nb_stashes) + RESET
+    gitStatus += (buildFormatStr(format256ColourFg(BLACK),
+                                 format256ColourBg(LGRAY))
+                  + ' ➦{} '.format(nb_stashes) + RESET)
 
 gitStatus += RESET + " "
 print(gitStatus)
