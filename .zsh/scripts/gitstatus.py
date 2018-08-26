@@ -31,7 +31,7 @@ changed_files = [namestat[0] for namestat in res.splitlines()]
 # staged files
 cmd = ['git', 'diff', '--staged', '--name-status']
 staged_files = [namestat[0] for namestat in Popen(cmd, stdout=PIPE).
-                communicate()[0].splitlines()]
+                communicate()[0].decode('utf-8').splitlines()]
 
 # status 'U' is unmerged files
 # number of modified files 'M' status = all results - 'U' status files
@@ -45,10 +45,12 @@ nb_staged = len(staged_files) - nb_U
 
 # untracked files
 cmd = ['git', 'ls-files', '--others', '--exclude-standard']
-nb_untracked = len(Popen(cmd, stdout=PIPE).communicate()[0].splitlines())
+nb_untracked = len(Popen(cmd, stdout=PIPE).communicate()[0].decode('utf-8')
+                   .splitlines())
 
 # number of stashes
-nb_stashes = len(Popen(['git','stash','list'],stdout=PIPE).communicate()[0].splitlines())
+nb_stashes = len(Popen(['git','stash','list'],stdout=PIPE).communicate()[0]
+                 .decode('utf-8').splitlines())
 
 # check if the repo is clean
 # i.e. no changed, staged, unmerged, untracked files
@@ -61,29 +63,35 @@ remote = ''
 detached = False
 tracked = False
 if not branch: # not on any branch
-    #print('no branch')
-    branch = symbols['detached'] + Popen(['git','rev-parse','--short',
-                                         'HEAD'], stdout=PIPE).communicate()[0][:-1]
+    # print('no branch')
+    branch = symbols['detached'] + (Popen(['git', 'rev-parse', '--short',
+                                          'HEAD'], stdout=PIPE)
+                                    .communicate()[0].decode('utf-8')[:-1])
     detached = True
 else: # on either a remote (tracked) or local only branch
-    remote_name = Popen(['git','config','branch.%s.remote' % branch], stdout=PIPE).communicate()[0].strip()
+    remote_name = Popen(['git', 'config', 'branch.%s.remote' % branch],
+                        stdout=PIPE).communicate()[0].decode('utf-8').strip()
     # print(remote_name)
     if remote_name:
-        merge_name = Popen(['git','config','branch.%s.merge' % branch], stdout=PIPE).communicate()[0].strip()
+        merge_name = Popen(['git', 'config', 'branch.%s.merge' % branch],
+                           stdout=PIPE).communicate()[0].decode('utf-8').strip()
         # print(merge_name)
         if remote_name == '.': # local
-            #print('local branch')
+            # print('local branch')
             remote_ref = merge_name
         else:
-            #print('remote branch')
+            # print('remote branch')
             remote_ref = 'refs/remotes/%s/%s' % (remote_name, merge_name[11:])
             tracked = True
-        revgit = Popen(['git', 'rev-list', '--left-right', '%s...HEAD' % remote_ref],stdout=PIPE, stderr=PIPE)
-        revlist = revgit.communicate()[0]
+        revgit = Popen(['git', 'rev-list', '--left-right', '%s...HEAD' %
+                        remote_ref], stdout=PIPE, stderr=PIPE)
+        revlist = revgit.communicate()[0].decode('utf-8')
         if revgit.poll(): # fallback to local
-            revlist = Popen(['git', 'rev-list', '--left-right', '%s...HEAD' % merge_name],stdout=PIPE, stderr=PIPE).communicate()[0]
+            revlist = Popen(['git', 'rev-list', '--left-right', '%s...HEAD'
+                             % merge_name], stdout=PIPE, stderr=PIPE).communicate()[0].decode('utf-8')
         # print (revlist)
-        # you can be ahead '>' and behind '<' if local version of tracked branch is on another branch
+        # You can be ahead '>' and behind '<' if local version of
+        # tracked branch is on another branch
         behead = revlist.splitlines()
         ahead = len([x for x in behead if x[0]=='>'])
         # print (ahead)
@@ -132,7 +140,8 @@ if nb_staged != 0:
 
 ### MERGE CONFLICTS ###
 if nb_U != 0:
-    gitStatus += buildFormatStr(format256ColourFg(RED), BG_DEFAULT) + '✘' + str(nb_U) + RESET + '❙'
+    gitStatus += buildFormatStr(format256ColourFg(RED), BG_DEFAULT) + '✘' \
+                 + str(nb_U) + RESET + '❙'
 
 ### MODIFIED FILES ### red
 if nb_changed != 0:
